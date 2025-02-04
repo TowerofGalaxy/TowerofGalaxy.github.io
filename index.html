@@ -1,45 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>愿塔佑你千生无厄</title>
-<style>
-body {
-background-color: #F5F5F5;
-font-family: "Microsoft YaHei", sans-serif;
-color: #000000;
-text-align: center;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愿塔佑你千生无厄</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #8e44ad;
+            --text-color: #34495e;
+            --bg-color: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-bg: #ffffff;
+        }
 
-	h1 {
-		font-size: 2.5em;
-		text-align: center;
-		margin-top: 30px;
-	}
-	
-	p {
-		font-size: 1.5em;
-		text-align: left;
-		margin-top: 20px;
-		margin-left: 40px;
-		margin-right: 40px;
-		line-height: 1.5;
-	}
-	
-	.container {
-		max-width: 800px;
-		margin: auto;
-	}
-	
+        /* 暗色主题 */
+        .dark-mode {
+            --primary-color: #ecf0f1;
+            --accent-color: #9b59b6;
+            --text-color: #bdc3c7;
+            --bg-color: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
 
-</style>
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+            line-height: 1.8;
+            margin: 0;
+            min-height: 100vh;
+            transition: all 0.5s ease;
+        }
+
+        /* 模式切换按钮 */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 30px;
+            padding: 10px 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-switcher:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 4rem 20px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin: 2rem 0;
+            position: relative;
+            padding-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            text-align: justify;
+            margin: 1.5rem 0;
+            padding: 1.2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 2.5rem 0;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+        }
+
+        .blessing {
+            font-family: "华文行楷", cursive;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin: 3rem 0;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+            background: rgba(142, 68, 173, 0.05);
+        }
+
+        /* 动画 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            p { font-size: 1rem; padding: 1rem; }
+            .theme-switcher { top: 10px; right: 10px; }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>星兆初现：星之塔创世纪</h1>
-<p>孩子们</p><p>你们知道吗</p><p>在很久很久以前，我们生活的这个世界</p><p>是没有昼夜交替的</p><p>我们的祖先生活在一个只有黑暗的世界</p><p>一个长达万年的永夜时代</p><br /><p>传说</p><p>神在创世之时，认为炽热的太阳只会为世界带来灾难</p><p>所以祂用无边的乌云遮住了太阳的光辉</p><p>神以自己为原型创造了人类</p><p>将自己的部分神力化作世界的灵魂之气</p><p>借助着灵魂之气创造了其余四族</p><p>灵、龙、兽、翼</p><p>神害怕祂所创造之物无法在黑暗中认清方向</p><p>祂赐予他们火种</p><p>赋予他们文明的种子</p><br /><p>…………</p><br /><p>这是《归世录》里关于神创世的大体内容</p><p>至于</p><p>如今的光明从何而来呢</p><p>伟大的塔冲破了乌云的笼罩</p><p>塔的降临为我们的世界带来了光明</p><br /><p>…………</p><br />
-<p>在塔降世前，这片大陆曾战乱不断</p><p>孩子们</p><p>多亏了伟大的塔</p><p>我们才能活在和平的年代</p><p>让我们为塔的存在</p><p>献上虔诚的信仰。</p>
-<p style="font-weight:bold;font-size:1.8em;">愿塔佑你千生无厄</p>
-</div>
+    <!-- 模式切换按钮 -->
+    <div class="theme-switcher">
+        <svg class="theme-icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>
+        </svg>
+        <span>夜幕</span>
+    </div>
+
+    <div class="container">
+        <h1>星兆初现：星之塔创世纪</h1>
+        
+        <p>孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。</p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p>传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。</p>
+
+        <p>神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。</p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p>这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。</p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p>在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。</p>
+
+        <p class="blessing">愿塔佑你千生无厄</p>
+    </div>
+
+    <script>
+        // 主题切换功能
+        const themeSwitcher = document.querySelector('.theme-switcher');
+        const themeIcon = themeSwitcher.querySelector('svg');
+        const themeText = themeSwitcher.querySelector('span');
+        
+        // 检查本地存储
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            document.body.classList.add(currentTheme);
+            updateButton(currentTheme);
+        }
+
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+            updateButton(isDark ? 'dark-mode' : '');
+        });
+
+        function updateButton(theme) {
+            if (theme === 'dark-mode') {
+                themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
+                themeText.textContent = '昼光';
+            } else {
+                themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
+                themeText.textContent = '夜幕';
+            }
+        }
+    </script>
 </body>
 </html>
