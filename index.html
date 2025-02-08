@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,19 @@
         :root {
             --primary-color: #2c3e50;
             --accent-color: #8e44ad;
+            --accent-rgb: 142, 68, 173;
+            /* 新增变量 */
             --text-color: #34495e;
-            --bg-color: #f8f9fa; /* 改为单色作为基础背景 */
+            --bg-color: #f8f9fa;
             --card-bg: #ffffff;
         }
 
-        /* 暗色主题 */
         .dark-mode {
             --primary-color: #ecf0f1;
             --accent-color: #9b59b6;
+            --accent-rgb: 155, 89, 182;
             --text-color: #bdc3c7;
-            --bg-color: #2c3e50; /* 改为单色作为基础背景 */
+            --bg-color: #2c3e50;
             --card-bg: rgba(255, 255, 255, 0.05);
         }
 
@@ -33,7 +36,6 @@
             transition: all 0.8s ease;
         }
 
-        /* 新增渐变过渡层 */
         body::before {
             content: '';
             position: absolute;
@@ -52,30 +54,115 @@
             opacity: 1;
         }
 
-        /* 模式切换按钮 */
-        .theme-switcher {
+        /* 控制按钮容器 */
+        .control-group {
             position: fixed;
             top: 20px;
             right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        /* 主题切换按钮 */
+        .theme-switcher {
             background: var(--card-bg);
             backdrop-filter: blur(5px);
             border-radius: 30px;
-            padding: 10px 15px;
+            padding: 10px 18px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 8px;
             transition: all 0.3s ease;
-            z-index: 1000;
         }
+
+        .theme-switcher:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
         .theme-icon {
             width: 24px;
             height: 24px;
             transition: all 0.3s ease;
         }
+
+        /* 语言切换按钮 */
+        .lang-switcher {
+            display: flex;
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 30px;
+            padding: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: rgba(var(--accent-rgb), 0.1);
+            color: var(--accent-color);
+        }
+
+        /* QQ群按钮 */
+        .qq-group {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .qq-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .qq-group::after {
+            content: "点击复制";
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .qq-group:hover::after {
+            opacity: 1;
+            transform: translate(-50%, -2px);
+        }
+
+        /* 删除了 .qq-icon 的相关样式 */
+
+        /* 内容容器 */
         .container {
-            position: relative; /* 确保内容在渐变层之上 */
+            position: relative;
             max-width: 760px;
             margin: 0 auto;
             padding: 4rem 20px;
@@ -85,7 +172,6 @@
             transition: all 0.5s ease;
         }
 
-        
         h1 {
             font-size: 2.8rem;
             color: var(--primary-color);
@@ -114,7 +200,12 @@
             padding: 1.2rem;
             background: var(--card-bg);
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        p:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important;
         }
 
         .divider {
@@ -123,93 +214,271 @@
             color: var(--accent-color);
             font-size: 1.5rem;
             letter-spacing: 0.5em;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .divider.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .blessing {
             font-family: "华文行楷", cursive;
             font-size: 1.8rem;
             color: var(--accent-color);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
             margin: 3rem 0;
             padding: 1.5rem;
             border-left: 4px solid var(--accent-color);
             background: rgba(142, 68, 173, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        /* 复制提示样式 */
+        .copy-tip {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: copyTipAnim 2s ease forwards;
+            z-index: 2000;
+        }
+
+        @keyframes copyTipAnim {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
         }
 
         /* 动画 */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            p { font-size: 1rem; padding: 1rem; }
-            .theme-switcher { top: 10px; right: 10px; }
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            .control-group {
+                top: 10px;
+                right: 10px;
+                flex-direction: column-reverse;
+            }
+
+            .theme-switcher,
+            .lang-switcher {
+                padding: 8px 12px;
+            }
+
+            .qq-group {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 14px;
+            }
+
+            .qq-group span {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
-        <!-- 模式切换按钮 -->
+    <div class="control-group">
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="zh-CN">简</button>
+            <button class="lang-btn" data-lang="zh-TW">繁</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+        </div>
         <div class="theme-switcher">
             <svg class="theme-icon" viewBox="0 0 24 24">
+                <!-- 使用原来的图标 -->
                 <path fill="currentColor"
                     d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z" />
             </svg>
             <span>夜幕</span>
         </div>
-        
-        <div class="container">
-            <h1>星兆初现：星之塔创世纪</h1>
-        
-            <p>孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。</p>
-        
-            <div class="divider">✦ ✦ ✦</div>
-        
-            <p>传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。</p>
-        
-            <p>神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。</p>
-        
-            <div class="divider">✦ ✦ ✦</div>
-        
-            <p>这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。</p>
-        
-            <div class="divider">✦ ✦ ✦</div>
-        
-            <p>在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。</p>
-        
-            <p class="blessing">愿塔佑你千生无厄</p>
-        </div>
-        
-        <script>
-            // 主题切换功能
-            const themeSwitcher = document.querySelector('.theme-switcher');
-            const themeIcon = themeSwitcher.querySelector('svg');
-            const themeText = themeSwitcher.querySelector('span');
+    </div>
 
-            // 检查本地存储
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme) {
-                document.body.classList.add(currentTheme);
-                updateButton(currentTheme);
-            }
+    <!-- 删除了 qq-group 内原来的图标 -->
+    <div class="qq-group" id="qqGroup">
+        <span>星之塔QQ群：512575972</span>
+    </div>
 
-            themeSwitcher.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                localStorage.setItem('theme', isDark ? 'dark-mode' : '');
-                updateButton(isDark ? 'dark-mode' : '');
+    <div class="container">
+        <h1 data-lang="zh-CN">星兆初现：星之塔创世纪</h1>
+        <h1 data-lang="zh-TW" style="display:none">星兆初現：星之塔創世紀</h1>
+        <h1 data-lang="en" style="display:none">Stellar Dawn: The Genesis of Star Tower</h1>
+
+        <p data-lang="zh-CN">
+            孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。
+        </p>
+        <p data-lang="zh-TW" style="display:none">
+            孩子們，你們知道嗎？在很久很久以前，我們生活的這個世界是沒有晝夜交替的。我們的祖先生活在一個只有黑暗的世界——一個長達萬年的永夜時代。
+        </p>
+        <p data-lang="en" style="display:none">
+            Children, did you know? In the distant past, our world had no alternation between day and night. Our
+            ancestors lived in a world of perpetual darkness—an eternal night lasting ten thousand years.
+        </p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p data-lang="zh-CN">
+            传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。
+        </p>
+        <p data-lang="zh-TW" style="display:none">
+            傳說神在創世之時，認為熾熱的太陽只會為世界帶來災難，所以祂用無邊的烏雲遮住了太陽的光輝。神以自己為原型創造了人類，將自己的部分神力化作世界的靈魂之氣，借助著靈魂之氣創造了其餘四族：靈、龍、獸、翼。
+        </p>
+        <p data-lang="en" style="display:none">
+            Legend says that during creation, the deity believed the blazing sun would only bring disaster to the world.
+            Therefore, He veiled the sun's radiance with endless dark clouds. Creating humans in His own image, He
+            transformed part of His divine power into the world's spiritual essence, using this essence to create four
+            other races: Spirits, Dragons, Beasts, and Winged Ones.
+        </p>
+
+        <p data-lang="zh-CN">
+            神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。
+        </p>
+        <p data-lang="zh-TW" style="display:none">
+            神害怕祂所創造之物無法在黑暗中認清方向，祂賜予他們火種，賦予他們文明的種子。
+        </p>
+        <p data-lang="en" style="display:none">
+            Fearing His creations would lose their way in darkness, He bestowed upon them the flame of fire and the
+            seeds of civilization.
+        </p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p data-lang="zh-CN">
+            这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。
+        </p>
+        <p data-lang="zh-TW" style="display:none">
+            這是《歸世錄》裡關於神創世的大體內容。至於如今的光明從何而來呢？偉大的塔衝破了烏雲的籠罩，塔的降臨為我們的世界帶來了光明。
+        </p>
+        <p data-lang="en" style="display:none">
+            This is the general account of divine creation from the "Chronicles of Return". As for the origin of our
+            current light? The great Tower pierced through the shroud of dark clouds, its arrival bringing illumination
+            to our world.
+        </p>
+
+        <div class="divider">✦ ✦ ✦</div>
+
+        <p data-lang="zh-CN">
+            在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。
+        </p>
+        <p data-lang="zh-TW" style="display:none">
+            在塔降世前，這片大陸曾戰亂不斷。孩子們，多虧了偉大的塔，我們才能活在和平的年代。讓我們為塔的存在，獻上虔誠的信仰。
+        </p>
+        <p data-lang="en" style="display:none">
+            Before the Tower's descent, this continent was plagued by endless wars. Children, it is thanks to the great
+            Tower that we live in an era of peace. Let us offer devout faith to the existence of the Tower.
+        </p>
+
+        <p class="blessing" data-lang="zh-CN">愿塔佑你千生无厄</p>
+        <p class="blessing" data-lang="zh-TW" style="display:none">願塔佑你千生無厄</p>
+        <p class="blessing" data-lang="en" style="display:none">May the Tower bless you with eternal fortune</p>
+    </div>
+
+    <script>
+        // 主题切换功能（图标使用原始版本）
+        const themeSwitcher = document.querySelector('.theme-switcher');
+        const themeIcon = themeSwitcher.querySelector('svg');
+        const themeText = themeSwitcher.querySelector('span');
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            document.body.classList.add(currentTheme);
+            updateButton(currentTheme);
+        }
+
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+            updateButton(isDark ? 'dark-mode' : '');
+        });
+
+        function updateButton(theme) {
+            // 使用原始图标
+            themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z" />';
+            themeText.textContent = document.body.classList.contains('dark-mode') ? '昼光' : '夜幕';
+        }
+
+        // QQ群复制功能，使用新设计的复制提示
+        const qqGroup = document.getElementById('qqGroup');
+        qqGroup.addEventListener('click', () => {
+            navigator.clipboard.writeText('512575972').then(() => {
+                const tip = document.createElement('div');
+                tip.className = 'copy-tip';
+                tip.textContent = '群号已复制';
+                document.body.appendChild(tip);
+                setTimeout(() => tip.remove(), 2000);
             });
+        });
 
-            function updateButton(theme) {
-                if (theme === 'dark-mode') {
-                    themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
-                    themeText.textContent = '昼光';
-                } else {
-                    themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
-                    themeText.textContent = '夜幕';
+        // 语言切换功能：仅针对 .container 内的内容进行切换
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // 设置按钮 active 状态
+                document.querySelectorAll('.lang-btn').forEach(button => button.classList.remove('active'));
+                this.classList.add('active');
+                const selectedLang = this.getAttribute('data-lang');
+                // 仅切换容器内的内容（避免影响按钮本身）
+                document.querySelectorAll('.container [data-lang]').forEach(el => {
+                    el.style.display = (el.getAttribute('data-lang') === selectedLang) ? '' : 'none';
+                });
+            });
+        });
+
+        // 滚动动画：让分隔符淡入
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
-            }
-        </script>
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.divider').forEach(el => observer.observe(el));
+    </script>
 </body>
+
 </html>
