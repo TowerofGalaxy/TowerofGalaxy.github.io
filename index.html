@@ -9,7 +9,7 @@
             --primary-color: #2c3e50;
             --accent-color: #8e44ad;
             --text-color: #34495e;
-            --bg-color: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --bg-color: #f8f9fa; /* 改为单色作为基础背景 */
             --card-bg: #ffffff;
         }
 
@@ -18,18 +18,38 @@
             --primary-color: #ecf0f1;
             --accent-color: #9b59b6;
             --text-color: #bdc3c7;
-            --bg-color: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --bg-color: #2c3e50; /* 改为单色作为基础背景 */
             --card-bg: rgba(255, 255, 255, 0.05);
         }
 
         body {
+            position: relative;
             background: var(--bg-color);
             color: var(--text-color);
             font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
             line-height: 1.8;
             margin: 0;
             min-height: 100vh;
-            transition: all 0.5s ease;
+            transition: all 0.8s ease;
+        }
+
+        /* 新增渐变过渡层 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.8s ease;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .dark-mode::before {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            opacity: 1;
         }
 
         /* 模式切换按钮 */
@@ -49,24 +69,23 @@
             transition: all 0.3s ease;
             z-index: 1000;
         }
-
-        .theme-switcher:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
         .theme-icon {
             width: 24px;
             height: 24px;
             transition: all 0.3s ease;
         }
-
         .container {
+            position: relative; /* 确保内容在渐变层之上 */
             max-width: 760px;
             margin: 0 auto;
             padding: 4rem 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
         }
 
+        
         h1 {
             font-size: 2.8rem;
             color: var(--primary-color);
@@ -131,65 +150,66 @@
     </style>
 </head>
 <body>
-    <!-- 模式切换按钮 -->
-    <div class="theme-switcher">
-        <svg class="theme-icon" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>
-        </svg>
-        <span>夜幕</span>
-    </div>
-
-    <div class="container">
-        <h1>星兆初现：星之塔创世纪</h1>
+        <!-- 模式切换按钮 -->
+        <div class="theme-switcher">
+            <svg class="theme-icon" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                    d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z" />
+            </svg>
+            <span>夜幕</span>
+        </div>
         
-        <p>孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。</p>
-
-        <div class="divider">✦ ✦ ✦</div>
-
-        <p>传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。</p>
-
-        <p>神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。</p>
-
-        <div class="divider">✦ ✦ ✦</div>
-
-        <p>这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。</p>
-
-        <div class="divider">✦ ✦ ✦</div>
-
-        <p>在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。</p>
-
-        <p class="blessing">愿塔佑你千生无厄</p>
-    </div>
-
-    <script>
-        // 主题切换功能
-        const themeSwitcher = document.querySelector('.theme-switcher');
-        const themeIcon = themeSwitcher.querySelector('svg');
-        const themeText = themeSwitcher.querySelector('span');
+        <div class="container">
+            <h1>星兆初现：星之塔创世纪</h1>
         
-        // 检查本地存储
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            document.body.classList.add(currentTheme);
-            updateButton(currentTheme);
-        }
+            <p>孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。</p>
+        
+            <div class="divider">✦ ✦ ✦</div>
+        
+            <p>传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。</p>
+        
+            <p>神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。</p>
+        
+            <div class="divider">✦ ✦ ✦</div>
+        
+            <p>这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。</p>
+        
+            <div class="divider">✦ ✦ ✦</div>
+        
+            <p>在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。</p>
+        
+            <p class="blessing">愿塔佑你千生无厄</p>
+        </div>
+        
+        <script>
+            // 主题切换功能
+            const themeSwitcher = document.querySelector('.theme-switcher');
+            const themeIcon = themeSwitcher.querySelector('svg');
+            const themeText = themeSwitcher.querySelector('span');
 
-        themeSwitcher.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark-mode' : '');
-            updateButton(isDark ? 'dark-mode' : '');
-        });
-
-        function updateButton(theme) {
-            if (theme === 'dark-mode') {
-                themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
-                themeText.textContent = '昼光';
-            } else {
-                themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
-                themeText.textContent = '夜幕';
+            // 检查本地存储
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme) {
+                document.body.classList.add(currentTheme);
+                updateButton(currentTheme);
             }
-        }
-    </script>
+
+            themeSwitcher.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark-mode' : '');
+                updateButton(isDark ? 'dark-mode' : '');
+            });
+
+            function updateButton(theme) {
+                if (theme === 'dark-mode') {
+                    themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
+                    themeText.textContent = '昼光';
+                } else {
+                    themeIcon.innerHTML = '<path fill="currentColor" d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M12,4A8,8 0 0,0 12,20A8,8 0 0,0 12,4Z"/>';
+                    themeText.textContent = '夜幕';
+                }
+            }
+        </script>
 </body>
 </html>
