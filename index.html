@@ -5,356 +5,417 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="星之塔创世纪 - 愿塔佑你千生无厄">
+    <meta name="theme-color" content="#0f172a">
     <title data-i18n="pageTitle">愿塔佑你千生无厄</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;500;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 核心变量 --- */
+        /* --- 0. 核心变量定义 --- */
         :root {
             /* 字体栈 */
-            --font-main: "Noto Serif SC", "Songti SC", serif;
-            --font-title: "Ma Shan Zheng", cursive;
+            --font-serif: "Noto Serif SC", "Songti SC", serif;
+            --font-art: "Ma Shan Zheng", cursive;
             --font-eng: "Cinzel", serif;
 
-            /* 浅色模式 (晨曦) */
-            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --glass-bg: rgba(255, 255, 255, 0.75);
+            /* 浅色模式 (圣域) */
+            --bg-color: #f3f4f6;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #e0e7ff 0%, #f3f4f6 100%);
+            --glass-surface: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.8);
-            --text-primary: #2c3e50;
-            --text-secondary: #546e7a;
-            --accent-color: #8e44ad; /* 紫色信仰 */
-            --accent-glow: rgba(142, 68, 173, 0.3);
-            --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-            --scrollbar-thumb: #bdc3c7;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent-color: #7c3aed; /* 皇家紫 */
+            --accent-glow: rgba(124, 58, 237, 0.2);
+            --spotlight-color: rgba(124, 58, 237, 0.15);
+            --shadow-card: 0 20px 50px -12px rgba(0, 0, 0, 0.1);
+            --particle-color: #94a3b8;
         }
 
         /* 深色模式 (永夜) */
         .dark-mode {
-            --bg-gradient: radial-gradient(circle at center, #1a2980 0%, #26d0ce 100%); /* 备用 */
-            --bg-color: #0f172a;
-            --glass-bg: rgba(15, 23, 42, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #e2e8f0;
+            --bg-color: #020617;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 100%);
+            --glass-surface: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --accent-color: #d8b4fe;
-            --accent-glow: rgba(216, 180, 254, 0.25);
-            --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            --scrollbar-thumb: #475569;
+            --accent-glow: rgba(216, 180, 254, 0.15);
+            --spotlight-color: rgba(255, 255, 255, 0.1);
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --particle-color: #64748b;
         }
 
-        /* --- 全局重置 --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* --- 1. 全局重置与基础 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-main);
-            background: var(--bg-color, #f4f7f9);
+            font-family: var(--font-serif);
+            background: var(--bg-color);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            transition: color 0.5s ease, background-color 0.5s ease;
+            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1), color 0.8s ease;
+            position: relative;
         }
 
-        /* 粒子背景容器 */
-        #particles-js {
+        /* 动态背景层 */
+        .bg-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: var(--bg-color);
-            transition: background-color 0.5s ease;
+            background: var(--bg-gradient);
+            z-index: -2;
+            transition: opacity 0.8s ease;
         }
 
-        /* 进度条 */
-        #reading-progress {
+        /* 噪点纹理 (增加质感) */
+        .noise-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 顶部阅读进度 */
+        .progress-bar {
             position: fixed;
             top: 0; left: 0; height: 3px;
-            background: var(--accent-color);
+            background: linear-gradient(90deg, var(--accent-color), transparent);
             width: 0%;
-            z-index: 9999;
-            box-shadow: 0 0 10px var(--accent-color);
+            z-index: 1000;
+            box-shadow: 0 0 15px var(--accent-color);
             transition: width 0.1s ease-out;
         }
 
-        /* --- 核心容器 (玻璃拟态) --- */
-        .container-wrapper {
+        /* --- 2. 主体容器 (3D 视差舞台) --- */
+        .stage {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 80px 20px 60px;
-            perspective: 1000px; /* 开启3D视差 */
+            padding: 100px 20px;
+            perspective: 1500px; /* 增强透视感 */
         }
 
-        .story-card {
+        /* --- 3. 超级玻璃卡片 --- */
+        .glass-card {
             position: relative;
             width: 100%;
             max-width: 800px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
+            background: var(--glass-surface);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 24px;
-            padding: clamp(2rem, 5vw, 4rem);
-            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            padding: clamp(2.5rem, 6vw, 4.5rem);
+            box-shadow: var(--shadow-card);
             transform-style: preserve-3d;
-            transition: transform 0.1s ease-out; /* 用于JS控制 */
-            opacity: 0;
-            animation: cardEntry 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            /* 初始隐藏，用于动画 */
+            opacity: 0; 
+            transform: translateY(30px) scale(0.98);
+            animation: cardReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            overflow: hidden; /* 限制光效溢出 */
         }
 
-        @keyframes cardEntry {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+        /* 鼠标跟随光效 (Spotlight) */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 24px;
+            padding: 2px; /* 边框宽度 */
+            background: radial-gradient(
+                800px circle at var(--mouse-x) var(--mouse-y),
+                var(--spotlight-color),
+                transparent 40%
+            );
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes cardReveal {
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* --- 排版样式 --- */
+        /* --- 4. 排版与内容 --- */
         h1 {
-            font-family: var(--font-title);
-            font-size: clamp(2rem, 6vw, 3.2rem);
-            color: var(--accent-color);
-            text-align: center;
-            margin: 0 0 3rem;
-            min-height: 1.2em;
-            line-height: 1.3;
-            text-shadow: 0 2px 15px var(--accent-glow);
-            position: relative;
-        }
-
-        /* 英文标题特殊字体 */
-        html[lang="en"] h1 { font-family: var(--font-eng); font-weight: 700; }
-
-        /* 打字机光标 */
-        .cursor::after {
-            content: '▋';
-            display: inline-block;
-            color: var(--accent-color);
-            animation: blink 1s step-end infinite;
-            margin-left: 4px;
-            vertical-align: baseline;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        p {
-            font-size: 1.15rem;
-            line-height: 2;
+            font-family: var(--font-art);
+            font-size: clamp(2.5rem, 7vw, 3.8rem);
             color: var(--text-primary);
-            text-align: justify;
-            margin-bottom: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        
-        /* 滚动显现激活态 */
-        p.visible { opacity: 1; transform: translateY(0); }
-
-        /* 首字下沉 - 仅在第一段 */
-        .drop-cap::first-letter {
-            float: left;
-            font-family: var(--font-title);
-            font-size: 3.5em;
-            line-height: 0.8;
-            padding-right: 8px;
-            padding-top: 4px;
-            color: var(--accent-color);
-        }
-        html[lang="en"] .drop-cap::first-letter { font-family: var(--font-eng); }
-
-        /* 分割线 */
-        .divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 2.5rem 0;
-            color: var(--accent-color);
-            opacity: 0.4;
-        }
-        .divider::before, .divider::after {
-            content: "";
-            height: 1px;
-            width: 60px;
-            background: currentColor;
-            margin: 0 15px;
-        }
-        .divider span { font-size: 1.2rem; animation: spinSlow 10s linear infinite; }
-        @keyframes spinSlow { to { transform: rotate(360deg); } }
-
-        /* 结语祝福 */
-        .blessing-box {
-            margin-top: 4rem;
-            padding: 2rem;
             text-align: center;
-            border-top: 1px solid rgba(142, 68, 173, 0.2);
-            position: relative;
-        }
-        .blessing-text {
-            font-family: var(--font-title);
-            font-size: clamp(1.5rem, 4vw, 2.2rem);
-            background: linear-gradient(45deg, var(--text-primary), var(--accent-color));
+            margin-bottom: 3.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent-color) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 10px 30px var(--accent-glow);
+        }
+        html[lang="en"] h1 { font-family: var(--font-eng); font-weight: 700; letter-spacing: -1px; }
+
+        .content-wrapper p {
+            font-size: 1.15rem;
+            line-height: 2.1;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: justify;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .content-wrapper p.visible { opacity: 1; transform: translateY(0); }
+
+        /* 首字下沉 */
+        .drop-cap::first-letter {
+            float: left;
+            font-family: var(--font-art);
+            font-size: 4em;
+            line-height: 0.8;
+            margin-right: 12px;
+            margin-top: 4px;
+            color: var(--accent-color);
+            text-shadow: 2px 2px 0 var(--bg-color); /* 防止背景干扰 */
+        }
+        html[lang="en"] .drop-cap::first-letter { font-family: var(--font-eng); font-weight: 700; }
+
+        /* 装饰分割线 */
+        .ornament {
+            text-align: center;
+            margin: 3rem 0;
+            color: var(--accent-color);
+            opacity: 0.3;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        .ornament::before, .ornament::after {
+            content: '';
             display: inline-block;
+            width: 40px; height: 1px;
+            background: currentColor;
+            vertical-align: middle;
+            margin: 0 15px;
         }
 
-        /* --- 控制按钮组 (右上角) --- */
-        .controls {
+        /* 祝福语 */
+        .blessing {
+            margin-top: 5rem;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        .blessing-text {
+            font-family: var(--font-art);
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            display: inline-block;
+            position: relative;
+        }
+        .blessing-text::after {
+            content: '';
+            position: absolute;
+            bottom: -10px; left: 50%;
+            width: 0; height: 2px;
+            background: var(--accent-color);
+            transition: width 0.6s ease, left 0.6s ease;
+        }
+        .glass-card:hover .blessing-text::after {
+            width: 100%; left: 0;
+        }
+
+        /* --- 5. 控件区域 (悬浮岛) --- */
+        .control-island {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 24px; right: 24px;
             display: flex;
             gap: 12px;
             z-index: 100;
-        }
-
-        .btn-glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            padding: 6px;
+            background: var(--glass-surface);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 8px 16px;
             border-radius: 50px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
-        .btn-glass:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            background: var(--accent-color);
-            color: white;
-            border-color: transparent;
-        }
-        .btn-icon { padding: 8px; width: 40px; height: 40px; }
-        .icon-svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
-
-        /* 语言切换器 */
-        .lang-menu {
-            display: flex;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            padding: 4px;
-            border-radius: 30px;
-            border: 1px solid var(--glass-border);
-        }
-        .lang-opt {
+        
+        .btn-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
             border: none;
             background: transparent;
             color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
         }
-        .lang-opt.active {
+        .btn-icon:hover {
             background: var(--accent-color);
-            color: white;
+            color: #fff;
+            transform: rotate(15deg);
+        }
+        .btn-icon svg { width: 20px; height: 20px; stroke-width: 2; }
+
+        .lang-group {
+            display: flex;
+            background: rgba(0,0,0,0.05);
+            border-radius: 20px;
+            padding: 2px;
+        }
+        .dark-mode .lang-group { background: rgba(255,255,255,0.05); }
+        
+        .lang-btn {
+            border: none;
+            background: transparent;
+            padding: 0 12px;
+            height: 32px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background: var(--bg-color);
+            color: var(--accent-color);
             font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* QQ悬浮按钮 (右下角) */
+        /* QQ 悬浮球 */
         .fab-qq {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 100;
+            bottom: 30px; right: 30px;
+            background: var(--glass-surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 50px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-right: 20px;
+            cursor: pointer;
+            z-index: 90;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
-        /* 复制成功提示 */
+        .fab-qq:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: var(--accent-color);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 15px 35px var(--accent-glow);
+        }
+
+        /* 提示条 Toast */
         .toast {
             position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(46, 204, 113, 0.95);
+            top: 100px; left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(16, 185, 129, 0.9);
             color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            pointer-events: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 2000;
-            font-weight: bold;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 200;
+            backdrop-filter: blur(4px);
         }
-        .toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
 
         /* --- 移动端适配 --- */
         @media (max-width: 768px) {
-            .container-wrapper { padding: 80px 15px 40px; }
-            .story-card { padding: 2rem 1.5rem; }
-            h1 { font-size: 1.8rem; margin-bottom: 2rem; }
-            p { font-size: 1rem; text-align: left; }
-            .drop-cap::first-letter { font-size: 3em; }
-            .controls { top: 15px; right: 15px; gap: 8px; }
-            .fab-qq { bottom: 20px; right: 20px; }
-            .btn-glass span { display: none; } /* 隐藏文字只留图标 */
-            .fab-qq span { display: inline; } /* QQ号文字保留 */
+            .stage { padding: 90px 16px 40px; }
+            .glass-card { padding: 2rem 1.5rem; border-radius: 20px; }
+            h1 { margin-bottom: 2rem; }
+            .content-wrapper p { font-size: 1.05rem; text-align: left; }
+            .control-island { top: 16px; right: 16px; padding: 4px; }
+            .fab-qq span { display: none; } /* 仅显示图标 */
+            .fab-qq { width: 50px; height: 50px; padding: 0; justify-content: center; border-radius: 50%; }
         }
     </style>
 </head>
 
 <body>
-    <div id="particles-js"></div>
-    <div id="reading-progress"></div>
-    <div class="toast" id="toast">已复制到剪贴板</div>
+    <div class="bg-layer"></div>
+    <div class="noise-layer"></div>
+    <div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></div>
 
-    <header class="controls">
-        <div class="lang-menu" id="langSwitcher">
-            <button class="lang-opt active" data-lang="zh-CN">简</button>
-            <button class="lang-opt" data-lang="zh-TW">繁</button>
-            <button class="lang-opt" data-lang="en">EN</button>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="toast" id="toast">✨ 群号已复制到星盘</div>
+
+    <div class="control-island">
+        <div class="lang-group" id="langSwitcher">
+            <button class="lang-btn active" data-lang="zh-CN">简</button>
+            <button class="lang-btn" data-lang="zh-TW">繁</button>
+            <button class="lang-btn" data-lang="en">EN</button>
         </div>
-        <button class="btn-glass btn-icon" id="themeToggle" aria-label="切换主题">
-            <svg class="icon-svg sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="icon-svg moon-icon" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <button class="btn-icon" id="themeToggle" aria-label="Switch Theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
         </button>
-    </header>
+    </div>
 
-    <main class="container-wrapper">
-        <article class="story-card" id="storyCard">
-            <h1 id="mainTitle" class="cursor"></h1>
+    <main class="stage">
+        <article class="glass-card" id="card">
+            <h1 id="mainTitle" data-i18n="mainTitle">星兆初现：星之塔创世纪</h1>
             
-            <div id="storyContent">
-                <p class="drop-cap" data-i18n="p1"></p>
-                <div class="divider"><span>✦</span></div>
-                <p data-i18n="p2"></p>
-                <p data-i18n="p3"></p>
-                <div class="divider"><span>✦</span></div>
-                <p data-i18n="p4"></p>
-                <div class="divider"><span>✦</span></div>
-                <p data-i18n="p5"></p>
+            <div class="content-wrapper">
+                <p class="drop-cap" data-i18n="p1">孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。</p>
+                <div class="ornament">✦</div>
+                <p data-i18n="p2">传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。</p>
+                <p data-i18n="p3">神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。</p>
+                <div class="ornament">✦</div>
+                <p data-i18n="p4">这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。</p>
+                <p data-i18n="p5">在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。</p>
             </div>
 
-            <div class="blessing-box">
-                <span class="blessing-text" data-i18n="blessing"></span>
+            <div class="blessing">
+                <span class="blessing-text" data-i18n="blessing">愿塔佑你千生无厄</span>
             </div>
         </article>
     </main>
 
-    <button class="btn-glass fab-qq" id="qqBtn">
-        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    <button class="fab-qq" id="qqBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         <span data-i18n="qqText">QQ群: 512575972</span>
     </button>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    
     <script>
-        /* --- 数据中心 --- */
-        const I18N = {
+        /* --- 数据配置 --- */
+        const RESOURCES = {
             "zh-CN": {
                 pageTitle: "愿塔佑你千生无厄",
                 mainTitle: "星兆初现：星之塔创世纪",
@@ -365,197 +426,208 @@
                 p5: "在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。",
                 blessing: "愿塔佑你千生无厄",
                 qqText: "QQ群: 512575972",
-                toast: "群号已复制!"
+                toast: "✨ 群号已复制，愿塔指引你"
             },
             "zh-TW": {
                 pageTitle: "願塔佑你千生無厄",
                 mainTitle: "星兆初現：星之塔創世紀",
                 p1: "孩子們，你們知道嗎？在很久很久以前，我們生活的這個世界是沒有晝夜交替的。我們的祖先生活在一個只有黑暗的世界——一個長達萬年的永夜時代。",
-                p2: "傳說神在創世之時，認為熾熱的太陽只會為世界帶來災難，所以祂用無邊的烏云遮住了太陽的光輝。神以自己為原型創造了人類，將自己的部分神力化作世界的靈魂之氣，借助著靈魂之氣創造了其餘四族：靈、龍、獸、翼。",
+                p2: "傳說神在創世之時，認為熾熱的太陽只會為世界帶來災難，所以祂用無邊的烏雲遮住了太陽的光輝。神以自己為原型創造了人類，將自己的部分神力化作世界的靈魂之氣，借助著靈魂之氣創造了其餘四族：靈、龍、獸、翼。",
                 p3: "神害怕祂所創造之物無法在黑暗中認清方向，祂賜予他們火種，賦予他們文明的種子。",
                 p4: "這是《歸世錄》裡關於神創世的大體內容。至於如今的光明從何而來呢？偉大的塔衝破了烏雲的籠罩，塔的降臨為我們的世界帶來了光明。",
                 p5: "在塔降世前，這片大陸曾戰亂不斷。孩子們，多虧了偉大的塔，我們才能活在和平的年代。讓我們為塔的存在，獻上虔誠的信仰。",
                 blessing: "願塔佑你千生無厄",
                 qqText: "QQ群: 512575972",
-                toast: "群號已複製!"
+                toast: "✨ 群號已複製，願塔指引你"
             },
             "en": {
                 pageTitle: "May the Tower Bless You",
                 mainTitle: "Stellar Dawn: Genesis",
-                p1: "Children, did you know? In the distant past, our world had no alternation between day and night. Our ancestors lived in a world of perpetual darkness—an eternal night lasting ten thousand years.",
-                p2: "Legend says that during creation, the deity believed the blazing sun would only bring disaster. Therefore, He veiled the sun's radiance with endless dark clouds. Creating humans in His own image, He transformed part of His divine power into essence, creating four other races: Spirits, Dragons, Beasts, and Winged Ones.",
-                p3: "Fearing His creations would lose their way in darkness, He bestowed upon them the flame of fire and the seeds of civilization.",
-                p4: "This is the account from the 'Chronicles of Return'. As for the origin of our light? The great Tower pierced through the dark clouds, bringing illumination to our world.",
-                p5: "Before the Tower's descent, this continent was plagued by wars. It is thanks to the great Tower that we live in peace. Let us offer devout faith for its existence.",
+                p1: "Children, did you know? Long ago, our world had no day or night. Our ancestors lived in a world of perpetual darkness—an eternal night lasting ten thousand years.",
+                p2: "Legend says the Creator believed the sun would bring disaster, so He veiled it with endless clouds. Creating humans in His image, He infused the world with His divine essence, birthing four other races: Spirits, Dragons, Beasts, and the Winged.",
+                p3: "Fearing His creations would be lost in the dark, He gave them fire and the seeds of civilization.",
+                p4: "This is the story from the 'Chronicles of Return'. But whence comes our light? The Great Tower pierced the dark clouds, bringing radiance to our world.",
+                p5: "Before the Tower, war plagued this land. Thanks to the Great Tower, we live in peace. Let us offer our devout faith to its existence.",
                 blessing: "May the Tower bless you eternally",
-                qqText: "QQ Group: 512575972",
-                toast: "Group ID Copied!"
+                qqText: "Group ID: 512575972",
+                toast: "✨ Group ID copied to clipboard"
             }
         };
 
-        /* --- 应用逻辑 --- */
-        class App {
-            constructor() {
-                this.lang = localStorage.getItem('lang') || 'zh-CN';
-                this.theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                this.typewriterInterval = null;
-                
-                this.init();
+        /* --- 核心逻辑 --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            // 状态管理
+            const state = {
+                lang: localStorage.getItem('st_lang') || 'zh-CN',
+                theme: localStorage.getItem('st_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            };
+
+            // DOM 元素
+            const els = {
+                body: document.body,
+                card: document.getElementById('card'),
+                themeBtn: document.getElementById('themeToggle'),
+                langBtns: document.querySelectorAll('.lang-btn'),
+                toast: document.getElementById('toast'),
+                progress: document.getElementById('progressBar'),
+                textNodes: document.querySelectorAll('[data-i18n]')
+            };
+
+            // 1. 初始化
+            init();
+
+            function init() {
+                applyTheme(state.theme);
+                applyLang(state.lang);
+                initParticles();
+                initInteractions();
+                initScrollObserver();
             }
 
-            init() {
-                this.applyTheme(this.theme);
-                this.renderLanguage(this.lang);
-                this.bindEvents();
-                this.initParticles();
-                this.initScrollObserver();
-            }
-
-            /* 1. 主题管理 */
-            applyTheme(theme) {
-                document.body.classList.toggle('dark-mode', theme === 'dark');
-                document.querySelector('.sun-icon').style.display = theme === 'dark' ? 'none' : 'block';
-                document.querySelector('.moon-icon').style.display = theme === 'dark' ? 'block' : 'none';
+            // 2. 主题切换系统
+            function applyTheme(theme) {
+                state.theme = theme;
+                localStorage.setItem('st_theme', theme);
                 
-                // 更新粒子颜色
+                if (theme === 'dark') {
+                    els.body.classList.add('dark-mode');
+                    els.themeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+                } else {
+                    els.body.classList.remove('dark-mode');
+                    els.themeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+                }
+                // 刷新粒子颜色
                 if(window.pJSDom && window.pJSDom[0]) {
                     const pJS = window.pJSDom[0].pJS;
-                    pJS.particles.color.value = theme === 'dark' ? '#a0a0a0' : '#34495e';
-                    pJS.particles.line_linked.color = theme === 'dark' ? '#a0a0a0' : '#34495e';
+                    pJS.particles.color.value = theme === 'dark' ? '#64748b' : '#94a3b8';
                     pJS.fn.particlesRefresh();
                 }
-                localStorage.setItem('theme', theme);
             }
 
-            /* 2. 语言与内容渲染 */
-            renderLanguage(lang) {
-                this.lang = lang;
-                document.documentElement.lang = lang;
-                localStorage.setItem('lang', lang);
+            els.themeBtn.addEventListener('click', () => {
+                applyTheme(state.theme === 'light' ? 'dark' : 'light');
+            });
 
-                // 切换按钮状态
-                document.querySelectorAll('.lang-opt').forEach(btn => {
+            // 3. 语言切换系统
+            function applyLang(lang) {
+                state.lang = lang;
+                localStorage.setItem('st_lang', lang);
+                document.documentElement.lang = lang;
+
+                els.langBtns.forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === lang);
                 });
 
-                // 静态文本更新
-                const data = I18N[lang];
-                document.title = data.pageTitle;
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.dataset.i18n;
-                    if (key !== 'mainTitle' && data[key]) el.textContent = data[key];
-                });
-
-                // 触发打字机
-                this.typewriter(document.getElementById('mainTitle'), data.mainTitle);
-            }
-
-            /* 3. 打字机特效 (优化版) */
-            typewriter(element, text) {
-                if (this.typewriterInterval) clearInterval(this.typewriterInterval);
-                element.textContent = '';
-                element.classList.add('cursor'); // 显示光标
+                // 内容淡入淡出替换
+                const content = RESOURCES[lang];
+                document.title = content.pageTitle;
                 
-                let i = 0;
-                this.typewriterInterval = setInterval(() => {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                    } else {
-                        clearInterval(this.typewriterInterval);
-                        setTimeout(() => element.classList.remove('cursor'), 2000); // 打字结束后光标闪烁一会儿再消失
-                    }
-                }, 100);
+                els.textNodes.forEach(node => {
+                    // 简单的淡出效果模拟
+                    node.style.opacity = 0;
+                    setTimeout(() => {
+                        const key = node.dataset.i18n;
+                        if (content[key]) node.textContent = content[key];
+                        node.style.opacity = 1;
+                    }, 200);
+                });
             }
 
-            /* 4. 滚动与视差事件 */
-            bindEvents() {
-                // 语言切换
-                document.getElementById('langSwitcher').addEventListener('click', (e) => {
-                    if(e.target.classList.contains('lang-opt')) this.renderLanguage(e.target.dataset.lang);
+            els.langBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => applyLang(e.target.dataset.lang));
+            });
+
+            // 4. 高级交互 (鼠标光斑 & 视差)
+            function initInteractions() {
+                // 鼠标光斑逻辑
+                els.card.addEventListener('mousemove', (e) => {
+                    const rect = els.card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    els.card.style.setProperty('--mouse-x', `${x}px`);
+                    els.card.style.setProperty('--mouse-y', `${y}px`);
+
+                    // 3D 倾斜 (仅桌面)
+                    if (window.innerWidth > 768) {
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = ((y - centerY) / centerY) * -2; // 极微小的倾斜
+                        const rotateY = ((x - centerX) / centerX) * 2;
+                        els.card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+                    }
                 });
 
-                // 主题切换
-                document.getElementById('themeToggle').addEventListener('click', () => {
-                    this.theme = this.theme === 'light' ? 'dark' : 'light';
-                    this.applyTheme(this.theme);
+                els.card.addEventListener('mouseleave', () => {
+                    els.card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
                 });
 
-                // QQ复制
+                // 滚动进度
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = (winScroll / height) * 100;
+                    els.progress.style.width = scrolled + "%";
+                });
+
+                // QQ 复制
                 document.getElementById('qqBtn').addEventListener('click', () => {
                     navigator.clipboard.writeText('512575972').then(() => {
-                        const toast = document.getElementById('toast');
-                        toast.textContent = I18N[this.lang].toast;
-                        toast.classList.add('show');
-                        setTimeout(() => toast.classList.remove('show'), 2000);
+                        els.toast.textContent = RESOURCES[state.lang].toast;
+                        els.toast.classList.add('show');
+                        setTimeout(() => els.toast.classList.remove('show'), 2500);
                     });
                 });
-
-                // 阅读进度条
-                window.addEventListener('scroll', () => {
-                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                    const scrolled = (scrollTop / scrollHeight) * 100;
-                    document.getElementById('reading-progress').style.width = scrolled + "%";
-                });
-
-                // 3D 视差效果 (仅桌面端)
-                if (!('ontouchstart' in window)) {
-                    const card = document.getElementById('storyCard');
-                    let ticking = false;
-                    
-                    document.addEventListener('mousemove', (e) => {
-                        if (!ticking) {
-                            window.requestAnimationFrame(() => {
-                                const x = (window.innerWidth / 2 - e.pageX) / 35;
-                                const y = (window.innerHeight / 2 - e.pageY) / 35;
-                                card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-                                ticking = false;
-                            });
-                            ticking = true;
-                        }
-                    });
-                }
             }
 
-            /* 5. 滚动显现动画 (IntersectionObserver) */
-            initScrollObserver() {
+            // 5. 滚动显现动画 (Observer)
+            function initScrollObserver() {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
-                        if (entry。isIntersecting) {
-                            entry.target。classList。add('visible');
-                            observer.unobserve(entry.target); // 只触发一次
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            // 可选：如果想重复触发，把下面这行去掉
+                            observer.unobserve(entry.target);
                         }
                     });
-                }, { threshold: 0.1， rootMargin: "0px 0px -50px 0px" });
+                }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
 
-                document.querySelectorAll('p').forEach(p => observer.observe(p));
+                document.querySelectorAll('.content-wrapper p').forEach((p, index) => {
+                    // 添加延迟以实现交错动画
+                    p.style.transitionDelay = `${index * 0.1}s`;
+                    observer.observe(p);
+                });
             }
 
-            /* 6. 粒子背景配置 */
-            initParticles() {
-                particlesJS("particles-js"， {
+            // 6. 粒子系统配置 (仿星空)
+            function initParticles() {
+                particlesJS("particles-js", {
                     "particles": {
-                        "number": { "value": 60， "density": { "enable": true， "value_area": 800 } }，
-                        "color": { "value": "#34495e" },
+                        "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                        "color": { "value": state.theme === 'dark' ? '#64748b' : '#94a3b8' },
                         "shape": { "type": "circle" },
-                        "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                        "size": { "value": 3, "random": true, "anim": { "enable": false } },
-                        "line_linked": { "enable": true, "distance": 150, "color": "#34495e"， "opacity": 0.2， "width": 1 }，
-                        "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
-                    }，
+                        "opacity": { 
+                            "value": 0.5, "random": true, 
+                            "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.1, "sync": false } 
+                        },
+                        "size": { 
+                            "value": 3, "random": true, 
+                            "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false } 
+                        },
+                        "line_linked": { "enable": false }, // 去掉连线，更像星星
+                        "move": { 
+                            "enable": true, "speed": 0.4, "direction": "top", "random": true, 
+                            "straight": false, "out_mode": "out", "bounce": false 
+                        }
+                    },
                     "interactivity": {
                         "detect_on": "canvas",
-                        "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-                        "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.6 } } }
-                    }，
+                        "events": { "onhover": { "enable": true, "mode": "bubble" }, "resize": true },
+                        "modes": { "bubble": { "distance": 200, "size": 4, "duration": 2, "opacity": 0.8 } }
+                    },
                     "retina_detect": true
                 });
             }
-        }
-
-        // 启动应用
-        document.addEventListener('DOMContentLoaded', () => new App());
+        });
     </script>
 </body>
 </html>
