@@ -3,568 +3,559 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n-key="pageTitle">愿塔佑你千生无厄</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="星之塔创世纪 - 愿塔佑你千生无厄">
+    <title data-i18n="pageTitle">愿塔佑你千生无厄</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;500;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
+        /* --- 核心变量 --- */
         :root {
-            --font-main: "Noto Serif SC", serif;
-            --font-special: "Ma Shan Zheng", cursive;
-            --primary-color: #1a2836;
-            --accent-color: #8e44ad;
-            --accent-rgb: 142, 68, 173;
-            --text-color: #34495e;
-            --bg-color: #f4f7f9;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --shadow-color-light: rgba(0, 0, 0, 0.08);
-            --shadow-color-dark: rgba(0, 0, 0, 0.12);
-            --transition-speed-fast: 0.3s;
-            --transition-speed-normal: 0.5s;
+            /* 字体栈 */
+            --font-main: "Noto Serif SC", "Songti SC", serif;
+            --font-title: "Ma Shan Zheng", cursive;
+            --font-eng: "Cinzel", serif;
+
+            /* 浅色模式 (晨曦) */
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #2c3e50;
+            --text-secondary: #546e7a;
+            --accent-color: #8e44ad; /* 紫色信仰 */
+            --accent-glow: rgba(142, 68, 173, 0.3);
+            --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --scrollbar-thumb: #bdc3c7;
         }
 
+        /* 深色模式 (永夜) */
         .dark-mode {
-            --primary-color: #eef2f5;
-            --accent-color: #9b59b6;
-            --accent-rgb: 155, 89, 182;
-            --text-color: #b0c4de;
-            --bg-color: #111827;
-            --card-bg: rgba(26, 40, 54, 0.7);
-            --shadow-color-light: rgba(0, 0, 0, 0.2);
-            --shadow-color-dark: rgba(0, 0, 0, 0.3);
+            --bg-gradient: radial-gradient(circle at center, #1a2980 0%, #26d0ce 100%); /* 备用 */
+            --bg-color: #0f172a;
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-color: #d8b4fe;
+            --accent-glow: rgba(216, 180, 254, 0.25);
+            --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --scrollbar-thumb: #475569;
         }
 
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation: none;
-            mix-blend-mode: normal;
-        }
-
-        ::view-transition-image-pair(root) {
-            isolation: auto;
-        }
-
+        /* --- 全局重置 --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
-            line-height: 1.9;
             margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            background: var(--bg-color, #f4f7f9);
+            color: var(--text-primary);
             min-height: 100vh;
-            transition: background-color var(--transition-speed-normal) ease, color var(--transition-speed-normal) ease;
+            overflow-x: hidden;
+            transition: color 0.5s ease, background-color 0.5s ease;
         }
 
+        /* 粒子背景容器 */
         #particles-js {
             position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            transition: transform 0.2s cubic-bezier(0.05, 0.95, 0.25, 0.95);
+            background: var(--bg-color);
+            transition: background-color 0.5s ease;
         }
 
-        #reading-progress-bar {
+        /* 进度条 */
+        #reading-progress {
             position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
+            top: 0; left: 0; height: 3px;
             background: var(--accent-color);
             width: 0%;
-            z-index: 2000;
-            transition: width 0.1s linear, background-color var(--transition-speed-normal) ease;
+            z-index: 9999;
             box-shadow: 0 0 10px var(--accent-color);
+            transition: width 0.1s ease-out;
         }
 
-        .control-group {
+        /* --- 核心容器 (玻璃拟态) --- */
+        .container-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px 60px;
+            perspective: 1000px; /* 开启3D视差 */
+        }
+
+        .story-card {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: clamp(2rem, 5vw, 4rem);
+            box-shadow: var(--shadow-soft);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out; /* 用于JS控制 */
+            opacity: 0;
+            animation: cardEntry 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes cardEntry {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- 排版样式 --- */
+        h1 {
+            font-family: var(--font-title);
+            font-size: clamp(2rem, 6vw, 3.2rem);
+            color: var(--accent-color);
+            text-align: center;
+            margin: 0 0 3rem;
+            min-height: 1.2em;
+            line-height: 1.3;
+            text-shadow: 0 2px 15px var(--accent-glow);
+            position: relative;
+        }
+
+        /* 英文标题特殊字体 */
+        html[lang="en"] h1 { font-family: var(--font-eng); font-weight: 700; }
+
+        /* 打字机光标 */
+        .cursor::after {
+            content: '▋';
+            display: inline-block;
+            color: var(--accent-color);
+            animation: blink 1s step-end infinite;
+            margin-left: 4px;
+            vertical-align: baseline;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: var(--text-primary);
+            text-align: justify;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        /* 滚动显现激活态 */
+        p.visible { opacity: 1; transform: translateY(0); }
+
+        /* 首字下沉 - 仅在第一段 */
+        .drop-cap::first-letter {
+            float: left;
+            font-family: var(--font-title);
+            font-size: 3.5em;
+            line-height: 0.8;
+            padding-right: 8px;
+            padding-top: 4px;
+            color: var(--accent-color);
+        }
+        html[lang="en"] .drop-cap::first-letter { font-family: var(--font-eng); }
+
+        /* 分割线 */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2.5rem 0;
+            color: var(--accent-color);
+            opacity: 0.4;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            height: 1px;
+            width: 60px;
+            background: currentColor;
+            margin: 0 15px;
+        }
+        .divider span { font-size: 1.2rem; animation: spinSlow 10s linear infinite; }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+        /* 结语祝福 */
+        .blessing-box {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(142, 68, 173, 0.2);
+            position: relative;
+        }
+        .blessing-text {
+            font-family: var(--font-title);
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            background: linear-gradient(45deg, var(--text-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        /* --- 控制按钮组 (右上角) --- */
+        .controls {
             position: fixed;
             top: 20px;
             right: 20px;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1001;
+            gap: 12px;
+            z-index: 100;
         }
 
-        .control-btn,
-        .lang-switcher {
-            background: var(--card-bg);
+        .btn-glass {
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px var(--shadow-color-light), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            border-radius: 30px;
-            transition: all var(--transition-speed-fast) cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .control-btn {
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            padding: 8px;
-            cursor: pointer;
-            border: none;
-            overflow: hidden;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-
-        .control-btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 8px 20px var(--shadow-color-dark);
+        .btn-glass:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            background: var(--accent-color);
+            color: white;
+            border-color: transparent;
         }
+        .btn-icon { padding: 8px; width: 40px; height: 40px; }
+        .icon-svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-        .control-icon {
-            width: 24px;
-            height: 24px;
-            color: var(--primary-color);
-        }
-
-        .dark-mode .theme-icon-sun {
-            display: block;
-        }
-
-        .dark-mode .theme-icon-moon {
-            display: none;
-        }
-
-        .theme-icon-sun {
-            display: none;
-        }
-
-        .theme-icon-moon {
-            display: block;
-        }
-
-        .lang-switcher {
+        /* 语言切换器 */
+        .lang-menu {
             display: flex;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
             padding: 4px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
         }
-
-        .lang-btn {
-            padding: 8px 14px;
+        .lang-opt {
             border: none;
             background: transparent;
-            color: var(--text-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
-            border-radius: 24px;
-            font-size: 0.9rem;
-            transition: all var(--transition-speed-fast) ease;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .lang-opt.active {
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
         }
 
-        .lang-btn.active {
-            color: var(--accent-color);
-            background: rgba(var(--accent-rgb), 0.15);
-        }
-
-        .qq-group {
+        /* QQ悬浮按钮 (右下角) */
+        .fab-qq {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            padding: 10px 18px;
+            z-index: 100;
             display: flex;
             align-items: center;
             gap: 10px;
-            z-index: 1000;
+            padding-right: 20px;
         }
-
-        .qq-group-icon {
-            width: 20px;
-            height: 20px;
-            color: var(--accent-color);
-        }
-
-        .qq-group-text {
-            font-size: 0.9rem;
-            color: var(--primary-color);
-        }
-
-        #qq-group[data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--primary-color);
-            color: var(--bg-color);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            white-space: nowrap;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        #qq-group[data-tooltip]:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(-5px);
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 720px;
-            margin: 7rem auto 4rem;
-            padding: clamp(1.5rem, 5vw, 3rem);
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 10px 40px var(--shadow-color-dark);
-            transition: background-color var(--transition-speed-normal) ease, transform 0.2s cubic-bezier(0.05, 0.95, 0.25, 0.95);
-            animation: fadeIn 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-        }
-
-        h1 {
-            font-size: clamp(2rem, 6vw, 2.8rem);
-            font-weight: 700;
-            color: var(--primary-color);
-            text-align: center;
-            margin: 1rem 0 2.5rem;
-            position: relative;
-            padding-bottom: 1rem;
-            min-height: 5rem;
-            /* Placeholder height */
-        }
-
-        /* FIX: New cursor style using a real span for proper wrapping */
-        .title-cursor {
-            color: var(--accent-color);
-            font-weight: bold;
-            animation: blink 0.7s infinite;
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        h1::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        p {
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-            text-align: justify;
-            margin: 1.8rem 0;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 3rem 0;
-            color: var(--accent-color);
-            font-size: 1.5rem;
-            letter-spacing: 0.5em;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .divider.visible {
-            opacity: 0.6;
-            transform: translateY(0);
-        }
-
-        .blessing {
-            font-family: var(--font-special);
-            font-size: clamp(1.8rem, 5vw, 2.2rem);
-            color: var(--accent-color);
-            text-shadow: 1px 1px 10px rgba(var(--accent-rgb), 0.2);
-            margin: 3rem 0 1rem;
-            padding: 1.5rem;
-            text-align: center;
-            border-image: linear-gradient(to right, transparent, var(--accent-color), transparent) 1;
-            border-width: 0 0 2px 0;
-            border-style: solid;
-        }
-
-        .copy-tip {
+        
+        /* 复制成功提示 */
+        .toast {
             position: fixed;
-            bottom: 95px;
-            right: 30px;
-            background: #2ecc71;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(46, 204, 113, 0.95);
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
-            font-size: 1rem;
-            font-family: var(--font-main);
-            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
-            animation: popInAndOut 3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 2000;
+            font-weight: bold;
         }
+        .toast.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 
-        @keyframes popInAndOut {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.8);
-            }
-
-            15% {
-                opacity: 1;
-                transform: translateY(0) scale(1.05);
-            }
-
-            25% {
-                transform: translateY(0) scale(1);
-            }
-
-            80% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.8);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* --- 移动端适配 --- */
         @media (max-width: 768px) {
-            h1 {
-                min-height: 7rem;
-                /* More space for multiline titles on mobile */
-            }
-
-            .control-group {
-                top: 15px;
-                right: 15px;
-            }
-
-            .container {
-                margin: 6rem auto 3rem;
-            }
-
-            .qq-group {
-                bottom: 20px;
-                right: 20px;
-            }
-
-            #qq-group[data-tooltip]::after {
-                display: none;
-            }
+            .container-wrapper { padding: 80px 15px 40px; }
+            .story-card { padding: 2rem 1.5rem; }
+            h1 { font-size: 1.8rem; margin-bottom: 2rem; }
+            p { font-size: 1rem; text-align: left; }
+            .drop-cap::first-letter { font-size: 3em; }
+            .controls { top: 15px; right: 15px; gap: 8px; }
+            .fab-qq { bottom: 20px; right: 20px; }
+            .btn-glass span { display: none; } /* 隐藏文字只留图标 */
+            .fab-qq span { display: inline; } /* QQ号文字保留 */
         }
     </style>
 </head>
 
 <body>
     <div id="particles-js"></div>
-    <div id="reading-progress-bar"></div>
+    <div id="reading-progress"></div>
+    <div class="toast" id="toast">已复制到剪贴板</div>
 
-    <header class="control-group">
-        <div class="lang-switcher">
-            <button class="lang-btn active" data-lang="zh-CN">简</button>
-            <button class="lang-btn" data-lang="zh-TW">繁</button>
-            <button class="lang-btn" data-lang="en">EN</button>
+    <header class="controls">
+        <div class="lang-menu" id="langSwitcher">
+            <button class="lang-opt active" data-lang="zh-CN">简</button>
+            <button class="lang-opt" data-lang="zh-TW">繁</button>
+            <button class="lang-opt" data-lang="en">EN</button>
         </div>
-        <button class="theme-switcher control-btn" aria-label="切换主题">
-            <svg class="control-icon theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg class="control-icon theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
+        <button class="btn-glass btn-icon" id="themeToggle" aria-label="切换主题">
+            <svg class="icon-svg sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="icon-svg moon-icon" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
     </header>
 
-    <button class="qq-group control-btn" id="qqGroup">
-        <svg class="qq-group-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-        <span class="qq-group-text" data-i18n-key="qqGroupText"></span>
-    </button>
+    <main class="container-wrapper">
+        <article class="story-card" id="storyCard">
+            <h1 id="mainTitle" class="cursor"></h1>
+            
+            <div id="storyContent">
+                <p class="drop-cap" data-i18n="p1"></p>
+                <div class="divider"><span>✦</span></div>
+                <p data-i18n="p2"></p>
+                <p data-i18n="p3"></p>
+                <div class="divider"><span>✦</span></div>
+                <p data-i18n="p4"></p>
+                <div class="divider"><span>✦</span></div>
+                <p data-i18n="p5"></p>
+            </div>
 
-    <main class="container">
-        <h1 id="main-title"></h1>
-        <p data-i18n-key="p1"></p>
-        <div class="divider">✦ ✦ ✦</div>
-        <p data-i18n-key="p2"></p>
-        <p data-i18n-key="p3"></p>
-        <div class="divider">✦ ✦ ✦</div>
-        <p data-i18n-key="p4"></p>
-        <div class="divider">✦ ✦ ✦</div>
-        <p data-i18n-key="p5"></p>
-        <p class="blessing" data-i18n-key="blessing"></p>
+            <div class="blessing-box">
+                <span class="blessing-text" data-i18n="blessing"></span>
+            </div>
+        </article>
     </main>
 
+    <button class="btn-glass fab-qq" id="qqBtn">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span data-i18n="qqText">QQ群: 512575972</span>
+    </button>
+
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const translations = { /* Omitting for brevity, content is the same */
-                "zh-CN": { pageTitle: "愿塔佑你千生无厄", mainTitle: "星兆初现：星之塔创世纪", p1: "孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。", p2: "传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。", p3: "神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。", p4: "这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。", p5: "在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。", blessing: "愿塔佑你千生无厄", qqGroupText: "QQ群: 512575972", copySuccess: "群号已复制!", copyTooltip: "复制群号", qqAriaLabel: "复制QQ群号: 512575972" },
-                "zh-TW": { pageTitle: "願塔佑你千生無厄", mainTitle: "星兆初現：星之塔創世紀", p1: "孩子們，你們知道嗎？在很久很久以前，我們生活的這個世界是沒有晝夜交替的。我們的祖先生活在一個只有黑暗的世界——一個長達萬年的永夜時代。", p2: "傳說神在創世之時，認為熾熱的太陽只會為世界帶來災難，所以祂用無邊的烏云遮住了太陽的光輝。神以自己為原型創造了人類，將自己的部分神力化作世界的靈魂之氣，借助著靈魂之氣創造了其餘四族：靈、龍、獸、翼。", p3: "神害怕祂所創造之物無法在黑暗中認清方向，祂賜予他們火種，賦予他們文明的種子。", p4: "這是《歸世錄》裡關於神創世的大體內容。至於如今的光明從何而來呢？偉大的塔衝破了烏雲的籠罩，塔的降臨為我們的世界帶來了光明。", p5: "在塔降世前，這片大陸曾戰亂不斷。孩子們，多虧了偉大的塔，我們才能活在和平的年代。讓我們為塔的存在，獻上虔誠的信仰。", blessing: "願塔佑你千生無厄", qqGroupText: "QQ群: 512575972", copySuccess: "群號已複製!", copyTooltip: "複製群號", qqAriaLabel: "複製QQ群號: 512575972" },
-                "en": { pageTitle: "May the Tower bless you", mainTitle: "Stellar Dawn: The Genesis of Star Tower", p1: "Children, did you know? In the distant past, our world had no alternation between day and night. Our ancestors lived in a world of perpetual darkness—an eternal night lasting ten thousand years.", p2: "Legend says that during creation, the deity believed the blazing sun would only bring disaster. Therefore, He veiled the sun's radiance with endless dark clouds. Creating humans in His own image, He transformed part of His divine power into the world's spiritual essence, using this essence to create four other races: Spirits, Dragons, Beasts, and Winged Ones.", p3: "Fearing His creations would lose their way in darkness, He bestowed upon them the flame of fire and the seeds of civilization.", p4: "This is the general account of divine creation from the 'Chronicles of Return'. As for the origin of our current light? The great Tower pierced through the shroud of dark clouds, its arrival bringing illumination to our world.", p5: "Before the Tower's descent, this continent was plagued by endless wars. Children, it is thanks to the great Tower that we live in an era of peace. Let us offer devout faith for the existence of the Tower.", blessing: "May the Tower bless you with eternal fortune", qqGroupText: "QQ Group: 512575972", copySuccess: "Group ID Copied!", copyTooltip: "Copy Group ID", qqAriaLabel: "Copy QQ Group ID: 512575972" }
-            };
+        /* --- 数据中心 --- */
+        const I18N = {
+            "zh-CN": {
+                pageTitle: "愿塔佑你千生无厄",
+                mainTitle: "星兆初现：星之塔创世纪",
+                p1: "孩子们，你们知道吗？在很久很久以前，我们生活的这个世界是没有昼夜交替的。我们的祖先生活在一个只有黑暗的世界——一个长达万年的永夜时代。",
+                p2: "传说神在创世之时，认为炽热的太阳只会为世界带来灾难，所以祂用无边的乌云遮住了太阳的光辉。神以自己为原型创造了人类，将自己的部分神力化作世界的灵魂之气，借助着灵魂之气创造了其余四族：灵、龙、兽、翼。",
+                p3: "神害怕祂所创造之物无法在黑暗中认清方向，祂赐予他们火种，赋予他们文明的种子。",
+                p4: "这是《归世录》里关于神创世的大体内容。至于如今的光明从何而来呢？伟大的塔冲破了乌云的笼罩，塔的降临为我们的世界带来了光明。",
+                p5: "在塔降世前，这片大陆曾战乱不断。孩子们，多亏了伟大的塔，我们才能活在和平的年代。让我们为塔的存在，献上虔诚的信仰。",
+                blessing: "愿塔佑你千生无厄",
+                qqText: "QQ群: 512575972",
+                toast: "群号已复制!"
+            },
+            "zh-TW": {
+                pageTitle: "願塔佑你千生無厄",
+                mainTitle: "星兆初現：星之塔創世紀",
+                p1: "孩子們，你們知道嗎？在很久很久以前，我們生活的這個世界是沒有晝夜交替的。我們的祖先生活在一個只有黑暗的世界——一個長達萬年的永夜時代。",
+                p2: "傳說神在創世之時，認為熾熱的太陽只會為世界帶來災難，所以祂用無邊的烏云遮住了太陽的光輝。神以自己為原型創造了人類，將自己的部分神力化作世界的靈魂之氣，借助著靈魂之氣創造了其餘四族：靈、龍、獸、翼。",
+                p3: "神害怕祂所創造之物無法在黑暗中認清方向，祂賜予他們火種，賦予他們文明的種子。",
+                p4: "這是《歸世錄》裡關於神創世的大體內容。至於如今的光明從何而來呢？偉大的塔衝破了烏雲的籠罩，塔的降臨為我們的世界帶來了光明。",
+                p5: "在塔降世前，這片大陸曾戰亂不斷。孩子們，多虧了偉大的塔，我們才能活在和平的年代。讓我們為塔的存在，獻上虔誠的信仰。",
+                blessing: "願塔佑你千生無厄",
+                qqText: "QQ群: 512575972",
+                toast: "群號已複製!"
+            },
+            "en": {
+                pageTitle: "May the Tower Bless You",
+                mainTitle: "Stellar Dawn: Genesis",
+                p1: "Children, did you know? In the distant past, our world had no alternation between day and night. Our ancestors lived in a world of perpetual darkness—an eternal night lasting ten thousand years.",
+                p2: "Legend says that during creation, the deity believed the blazing sun would only bring disaster. Therefore, He veiled the sun's radiance with endless dark clouds. Creating humans in His own image, He transformed part of His divine power into essence, creating four other races: Spirits, Dragons, Beasts, and Winged Ones.",
+                p3: "Fearing His creations would lose their way in darkness, He bestowed upon them the flame of fire and the seeds of civilization.",
+                p4: "This is the account from the 'Chronicles of Return'. As for the origin of our light? The great Tower pierced through the dark clouds, bringing illumination to our world.",
+                p5: "Before the Tower's descent, this continent was plagued by wars. It is thanks to the great Tower that we live in peace. Let us offer devout faith for its existence.",
+                blessing: "May the Tower bless you eternally",
+                qqText: "QQ Group: 512575972",
+                toast: "Group ID Copied!"
+            }
+        };
 
-            let currentLang = localStorage.getItem('language') || 'zh-CN';
-            let typingInterval;
+        /* --- 应用逻辑 --- */
+        class App {
+            constructor() {
+                this.lang = localStorage.getItem('lang') || 'zh-CN';
+                this.theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                this.typewriterInterval = null;
+                
+                this.init();
+            }
 
-            const mainTitleEl = document.getElementById('main-title');
-            const qqGroupButton = document.getElementById('qqGroup');
+            init() {
+                this.applyTheme(this.theme);
+                this.renderLanguage(this.lang);
+                this.bindEvents();
+                this.initParticles();
+                this.initScrollObserver();
+            }
 
-            function typewriter(element, text) {
-                clearInterval(typingInterval);
+            /* 1. 主题管理 */
+            applyTheme(theme) {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                document.querySelector('.sun-icon').style.display = theme === 'dark' ? 'none' : 'block';
+                document.querySelector('.moon-icon').style.display = theme === 'dark' ? 'block' : 'none';
+                
+                // 更新粒子颜色
+                if(window.pJSDom && window.pJSDom[0]) {
+                    const pJS = window.pJSDom[0].pJS;
+                    pJS.particles.color.value = theme === 'dark' ? '#a0a0a0' : '#34495e';
+                    pJS.particles.line_linked.color = theme === 'dark' ? '#a0a0a0' : '#34495e';
+                    pJS.fn.particlesRefresh();
+                }
+                localStorage.setItem('theme', theme);
+            }
+
+            /* 2. 语言与内容渲染 */
+            renderLanguage(lang) {
+                this.lang = lang;
+                document.documentElement.lang = lang;
+                localStorage.setItem('lang', lang);
+
+                // 切换按钮状态
+                document.querySelectorAll('.lang-opt').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+
+                // 静态文本更新
+                const data = I18N[lang];
+                document.title = data.pageTitle;
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.dataset.i18n;
+                    if (key !== 'mainTitle' && data[key]) el.textContent = data[key];
+                });
+
+                // 触发打字机
+                this.typewriter(document.getElementById('mainTitle'), data.mainTitle);
+            }
+
+            /* 3. 打字机特效 (优化版) */
+            typewriter(element, text) {
+                if (this.typewriterInterval) clearInterval(this.typewriterInterval);
+                element.textContent = '';
+                element.classList.add('cursor'); // 显示光标
+                
                 let i = 0;
-                typingInterval = setInterval(() => {
+                this.typewriterInterval = setInterval(() => {
                     if (i < text.length) {
-                        element.innerHTML = text.substring(0, i + 1) + '<span class="title-cursor">▋</span>';
+                        element.textContent += text.charAt(i);
                         i++;
                     } else {
-                        clearInterval(typingInterval);
-                        element.innerHTML = text; // Final text without cursor
+                        clearInterval(this.typewriterInterval);
+                        setTimeout(() => element.classList.remove('cursor'), 2000); // 打字结束后光标闪烁一会儿再消失
                     }
-                }, 120);
+                }, 100);
             }
 
-            function setLanguage(lang) {
-                currentLang = lang; localStorage.setItem('language', lang); document.documentElement.lang = lang;
-                const translationData = translations[lang];
-
-                document.querySelectorAll('[data-i18n-key]').forEach(el => {
-                    const key = el.getAttribute('data-i18n-key');
-                    if (translationData[key]) el.textContent = translationData[key];
+            /* 4. 滚动与视差事件 */
+            bindEvents() {
+                // 语言切换
+                document.getElementById('langSwitcher').addEventListener('click', (e) => {
+                    if(e.target.classList.contains('lang-opt')) this.renderLanguage(e.target.dataset.lang);
                 });
 
-                document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+                // 主题切换
+                document.getElementById('themeToggle').addEventListener('click', () => {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                    this.applyTheme(this.theme);
+                });
 
-                qqGroupButton.setAttribute('data-tooltip', translationData.copyTooltip);
-                qqGroupButton.setAttribute('aria-label', translationData.qqAriaLabel);
-
-                typewriter(mainTitleEl, translationData.mainTitle);
-            }
-
-            function applyTheme(theme) {
-                const isDark = theme === 'dark-mode';
-                document.body.classList.toggle('dark-mode', isDark);
-                if (window.pJSDom && window.pJSDom[0]) {
-                    const color = isDark ? '#ffffff' : '#34495e';
-                    window.pJSDom[0].pJS.particles.color.value = color;
-                    window.pJSDom[0].pJS.fn.particlesRefresh();
-                }
-            }
-
-            document.querySelector('.lang-switcher').addEventListener('click', (e) => {
-                if (e.target.matches('.lang-btn') && e.target.dataset.lang !== currentLang) {
-                    setLanguage(e.target.dataset.lang);
-                }
-            });
-
-            document.querySelector('.theme-switcher').addEventListener('click', (e) => {
-                const newTheme = document.body.classList.contains('dark-mode') ? '' : 'dark-mode';
-                localStorage.setItem('theme', newTheme);
-                if (document.startViewTransition) {
-                    const transition = document.startViewTransition(() => applyTheme(newTheme));
-                    transition.ready.then(() => {
-                        const { clientX: x, clientY: y } = e;
-                        const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
-                        document.documentElement.animate(
-                            { clipPath: [`circle(0% at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-                            { duration: 600, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
-                        );
+                // QQ复制
+                document.getElementById('qqBtn').addEventListener('click', () => {
+                    navigator.clipboard.writeText('512575972').then(() => {
+                        const toast = document.getElementById('toast');
+                        toast.textContent = I18N[this.lang].toast;
+                        toast.classList.add('show');
+                        setTimeout(() => toast.classList.remove('show'), 2000);
                     });
-                } else { applyTheme(newTheme); }
-            });
-
-            const progressBar = document.getElementById('reading-progress-bar');
-            window.addEventListener('scroll', () => {
-                const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-                const scrollableHeight = scrollHeight - clientHeight;
-                progressBar.style.width = scrollableHeight > 0 ? `${(scrollTop / scrollableHeight) * 100}%` : '0%';
-            });
-
-            if (!('ontouchstart' in window || navigator.maxTouchPoints > 0)) {
-                const container = document.querySelector('.container');
-                const particles = document.getElementById('particles-js');
-                window.addEventListener('mousemove', (e) => {
-                    const { clientX, clientY, innerWidth, innerHeight } = e.currentTarget;
-                    const x = (clientX / innerWidth - 0.5) * 2;
-                    const y = (clientY / innerHeight - 0.5) * 2;
-                    container.style.transform = `perspective(1000px) rotateY(${x * 3}deg) rotateX(${-y * 3}deg)`;
-                    particles.style.transform = `translateX(${-x * 20}px) translateY(${-y * 20}px)`;
                 });
+
+                // 阅读进度条
+                window.addEventListener('scroll', () => {
+                    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = (scrollTop / scrollHeight) * 100;
+                    document.getElementById('reading-progress').style.width = scrolled + "%";
+                });
+
+                // 3D 视差效果 (仅桌面端)
+                if (!('ontouchstart' in window)) {
+                    const card = document.getElementById('storyCard');
+                    let ticking = false;
+                    
+                    document.addEventListener('mousemove', (e) => {
+                        if (!ticking) {
+                            window.requestAnimationFrame(() => {
+                                const x = (window.innerWidth / 2 - e.pageX) / 35;
+                                const y = (window.innerHeight / 2 - e.pageY) / 35;
+                                card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+                                ticking = false;
+                            });
+                            ticking = true;
+                        }
+                    });
+                }
             }
 
-            qqGroupButton.addEventListener('click', () => {
-                navigator.clipboard.writeText('512575972').then(() => {
-                    const tip = document.createElement('div');
-                    tip.className = 'copy-tip';
-                    tip.textContent = translations[currentLang].copySuccess;
-                    document.body.appendChild(tip);
-                    setTimeout(() => tip.remove(), 3000);
-                });
-            });
+            /* 5. 滚动显现动画 (IntersectionObserver) */
+            initScrollObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry。isIntersecting) {
+                            entry.target。classList。add('visible');
+                            observer.unobserve(entry.target); // 只触发一次
+                        }
+                    });
+                }, { threshold: 0.1， rootMargin: "0px 0px -50px 0px" });
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-            document.querySelectorAll('.divider').forEach(el => observer.observe(el));
-
-            function initializePage() {
-                const savedTheme = localStorage.getItem('theme');
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const initialTheme = savedTheme ?? (prefersDark ? 'dark-mode' : '');
-
-                document.body.classList.toggle('dark-mode', initialTheme === 'dark-mode');
-
-                particlesJS("particles-js", {
-                    "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 } }, "color": { "value": initialTheme === 'dark-mode' ? '#ffffff' : '#34495e' }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 2, "random": true }, "line_linked": { "enable": false }, "move": { "enable": true, "speed": 0.5, "direction": "none", "random": true, "straight": false, "out_mode": "out" } },
-                    "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": false }, "onclick": { "enable": false } } }, "retina_detect": true
-                });
-
-                setLanguage(currentLang);
+                document.querySelectorAll('p').forEach(p => observer.observe(p));
             }
 
-            initializePage();
-        });
+            /* 6. 粒子背景配置 */
+            initParticles() {
+                particlesJS("particles-js"， {
+                    "particles": {
+                        "number": { "value": 60， "density": { "enable": true， "value_area": 800 } }，
+                        "color": { "value": "#34495e" },
+                        "shape": { "type": "circle" },
+                        "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                        "size": { "value": 3, "random": true, "anim": { "enable": false } },
+                        "line_linked": { "enable": true, "distance": 150, "color": "#34495e"， "opacity": 0.2， "width": 1 }，
+                        "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+                    }，
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                        "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.6 } } }
+                    }，
+                    "retina_detect": true
+                });
+            }
+        }
+
+        // 启动应用
+        document.addEventListener('DOMContentLoaded', () => new App());
     </script>
 </body>
-
 </html>
